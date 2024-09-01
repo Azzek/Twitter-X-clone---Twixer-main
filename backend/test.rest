@@ -1,0 +1,19 @@
+POST http://127.0.0.1:8000/signup Content-Type: application/json
+
+{ "username": "janch", "password": "stefast2005", "email": "adam@mail.com" }
+
+###
+
+POST http://127.0.0.1:8000/api/127.0.0.1:8000/api/accounts/loginnts/login/
+Content-Type: application/json
+
+{ "username": "janch", "password": "stefast2005" }
+
+###
+
+GET http://localhost:8000/api/accounts/id/3/
+Content-Type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwNzkzOTEzLCJpYXQiOjE3MjA3Nzg1OTMsImp0aSI6ImU2NmQyNjJkYjE5YTRlYmZhNTRhZDhhMWFkMDI4ODVhIiwidXNlcl9pZCI6Mn0.oLFj1zZ0c1RNIElEF6Cm733U1OIWtKO29ujCcNAiMMU
+
+GET http://localhost:8000/api/posts/trends/list/
+Content-Type: application/json
