@@ -49,13 +49,15 @@ const Follow = ({ id, rfFn }: FollowProps) => {
     };
 
     const handleFollow = async () => {
-        if (isFollowed) {
-            await removeFollow(usernameUserData?.user);
-        } else {
-            await addFollow(usernameUserData?.user);
+        if (usernameUserData) {
+            if (isFollowed) {
+                await removeFollow(usernameUserData?.user);
+            } else {
+                await addFollow(usernameUserData?.user);
+            }
         }
         setIsFollowed(!isFollowed);
-        rfFn();  // Odśwież dane na stronie FollowPage
+        rfFn();  // refresh data xd
     };
 
     return (

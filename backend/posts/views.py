@@ -147,19 +147,6 @@ class BookmarkSearchView(generics.ListAPIView):
         user_profile = UserProfile.objects.get(user=self.request.user)
         return Bookmark.objects.filter(user = user_profile)
     
-# class RepostApiViewSet(viewsets.ModelViewSet):
-#     serializer_class = RepostSerializer
-#     permissions1_classes = [permissions.IsAuthenticated]
-    
-#     def get_queryset(self):
-#         user_profile = UserProfile.objects.get(user=self.request.user)
-#         return Repost.objects.filter(user=user_profile)
-    
-#     def perform_create(self, serializer):
-#         user_profile = UserProfile.objects.get(user=self.request.user)
-#         if Repost.objects.filter(user=user_profile, post=self.request.data.get('post')).exists():
-#             raise ValidationError('You already Reposted this post.')
-#         serializer.save(user=user_profile)
 class RepostApiView(viewsets.ModelViewSet):
     serializer_class = PostSerializer  
     permission_classes = [permissions.IsAuthenticated]

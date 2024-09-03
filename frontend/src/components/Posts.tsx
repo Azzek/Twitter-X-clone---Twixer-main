@@ -3,10 +3,6 @@ import IdPost from './IdPost';
 import api from '@/api'; 
 import PostInput from './PostInput';
 
-
-
-
-// Definiowanie typu dla postów
 interface PostTypes {
   id: number;
   body: string;
@@ -52,9 +48,9 @@ const Recentposts: React.FC = () => {
             <span className="sr-only">Loading...</span>
           </div>
           :
-          <div className='h-screen flex justify-start flex-col thin-border'>
+          <div className='h-screen flex justify-start flex-col thin-border rounded-none border-l-0'>
           <PostInput/>
-          <div className='w-full thin-border'>
+          <div className='w-full thin-border rounded-none border-l-0'>
             {posts.map(post => (
                 <IdPost
                   key={post.id  }

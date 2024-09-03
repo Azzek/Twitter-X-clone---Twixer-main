@@ -6,20 +6,11 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
   Card,
   CardDescription,
-  CardFooter,
-  CardHeader,
 } from "@/components/ui/card";
 import { formatDistanceToNow } from 'date-fns';
 import api from '@/api';
@@ -68,7 +59,6 @@ const PostPage = () => {
   const [authorData, setAuthorData] = useState<UserDataTypes | null>(null);
   const [postData, setPostData] = useState<PostTypes | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {

@@ -1,4 +1,3 @@
-import { useContext, useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import {
   NavigationMenu,
@@ -10,10 +9,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FiLogOut } from "react-icons/fi";
@@ -30,7 +25,7 @@ import { FaUser } from "react-icons/fa";
 import { BiSolidLogInCircle } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";  
 import { FaRegUser } from "react-icons/fa6";
-import { MdOutlinePostAdd } from "react-icons/md";
+import { MdExplore, MdOutlinePostAdd } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoBookmarksOutline } from "react-icons/io5";
 import Logo from './Logo';
@@ -39,14 +34,17 @@ import { DropdownMenuGroup } from '@radix-ui/react-dropdown-menu';
 import { IoMdMail } from 'react-icons/io';
 import PostDialogInput from './PostDialogInput';
 import { LuLogOut } from 'react-icons/lu';
+interface navbarPropsTypes {
+  mobile?:string | undefined
+}
 
-const Navbar = () => {
+const Navbar = ({mobile}:navbarPropsTypes) => {
   const {isAuthenticated, userData, logout} = useAuth();
   const navigate = useNavigate();
-  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const isMobile = useMediaQuery({ query: `(max-width: ${mobile? mobile : '500px'})` });
 
   return isMobile ? (
-    <NavigationMenu className="w-full px-2" orientation="horizontal">
+    <NavigationMenu className="w-full px-2 fixed bottom-0 left-0" orientation="horizontal">
       <div className="w-screen">
         <NavigationMenuList className="mt-1 flex w-full justify-between bg-slate-900 p-2 rounded-md">
           <NavigationMenuItem>
@@ -109,9 +107,9 @@ const Navbar = () => {
       </div>
     </NavigationMenu>
   ) : (
-    <div className="h-screen bg-black flex flex-col justify-between items-center gap-3 pt-3 max-h-screen fixed left-0 top-0 lg:w-[20%] shadow-lg -z-2">
+    <div className="h-screen bg-black flex flex-col justify-between items-center gap-3 pt-3 max-h-screen fixed left-0 top-0 lg:w-[20%] shadow-lg -z-2 thin-border rounded-none border-y-0 border-l-0">
       
-        <div className='pl-10 lg:pl-52 flex flex-col gap-6'>
+        <div className='pl-52 flex flex-col gap-6 pr-28'>
           <Logo />
           <Link to={`/`} >
             <NavigationMenuItem className="flex flex-1 items-center justify-between space-x-2 ">
@@ -123,7 +121,7 @@ const Navbar = () => {
           </Link>
           <Link to={`/${userData?.username}`}>
             <NavigationMenuItem className="w-full flex flex-1 items-center justify-between space-x-2">
-              <Button className="w-80 border-gray-700 bg-black text-2xl flex justify-start transition duration-300 hover:bg-gray-800">
+              <Button className=" border-gray-700 bg-black text-2xl flex justify-start transition duration-300 hover:bg-gray-800">
                 <FaRegUser className="h-7 w-7 text-gray-200"/>
                 <span className="ml-2 text-xl text-gray-200 hidden lg:flex">Profile</span>
               </Button>
@@ -131,7 +129,7 @@ const Navbar = () => {
           </Link>
           <Link to="/bookmarks"> 
             <NavigationMenuItem className="w-full flex flex-1 items-center justify-between space-x-2">
-              <Button className="hover:bg-gray-700 bg-black text-2xl flex justify-between relative transition duration-300 hover:bg-gray-800">
+              <Button className=" bg-black text-2xl flex justify-between relative transition duration-300 hover:bg-gray-800">
                 <IoBookmarksOutline className="h-7 w-7 text-gray-200"/>
                 <span className="ml-2 text-xl text-gray-200 hidden lg:flex">Bookmarks</span>
               </Button>
@@ -139,24 +137,32 @@ const Navbar = () => {
           </Link>
           <Link to="/messages"> 
             <NavigationMenuItem className="w-full flex flex-1 items-center justify-between space-x-2">
-              <Button className="hover:bg-gray-700 bg-black text-2xl flex justify-between relative transition duration-300 hover:bg-gray-800">
+              <Button className=" bg-black text-2xl flex justify-between relative transition duration-300 hover:bg-gray-800">
                 <IoMdMail className="h-7 w-7 text-gray-200"/>
                 <span className="ml-2 text-xl text-gray-200 hidden lg:flex">Messages</span>
               </Button>
             </NavigationMenuItem>
           </Link>
-          <Link to="/explore"> 
-            <NavigationMenuItem className="w-full flex flex-1 items-center justify-between space-x-2">
-              <Button className="hover:bg-gray-700 bg-black text-2xl flex justify-between relative transition duration-300 hover:bg-gray-800">
-                <LuLogOut  className="h-7 w-7 text-gray-200"/>
-                <span className="ml-2 text-xl text-gray-200 hidden lg:flex">Logout</span>
-              </Button>
-            </NavigationMenuItem>
-          </Link>
+            <Link to="/login" onClick={logout}> 
+              <NavigationMenuItem className="w-full flex flex-1 items-center justify-between space-x-2">
+                <Button className=" bg-black text-2xl flex justify-between relative transition duration-300 hover:bg-gray-800">
+                  <LuLogOut  className="h-7 w-7 text-gray-200"/>
+                  <span className="ml-2 text-xl text-gray-200 hidden lg:flex">Logout</span>
+                </Button>
+              </NavigationMenuItem>
+            </Link>
+            <Link to="/explore"> 
+              <NavigationMenuItem className="w-full flex flex-1 items-center justify-between space-x-2">
+                <Button className=" bg-black text-2xl flex justify-between relative transition duration-300 hover:bg-gray-800">
+                  <FaSearch className="h-7 w-7 text-gray-200"/>
+                  <span className="ml-2 text-xl text-gray-200 hidden lg:flex">Explore</span>
+                </Button>
+              </NavigationMenuItem>
+            </Link>
           <PostDialogInput/>
         </div>
 
-      <div className="flex lg:justify-center lg:self-end w-[10%] hidden">
+      <div className="flex lg:justify-center lg:self-end  ">
         <Avatar className='h-14 w-14 m-3 border border-gray-700 shadow-md'>
           <AvatarImage src={userData?.avatar} alt="avatar image" />
           <AvatarFallback>
@@ -166,7 +172,10 @@ const Navbar = () => {
         {userData && (
           <div className="text-white mt-2 px-2 self-start hidden lg:flex">
             <div className='flex justify-between '>
-              <p className='font-semibold'>{userData.username}</p>
+              <div>
+                <p className='font-semibold'>{userData.username}</p>
+                <p className='text-gray-400'>{`@${userData.email.substring(0,20)}${userData.email.length >= 20 ? '...' : ''}`}</p>
+              </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className='bg-transparent p-0'><BsThreeDots /></Button>
@@ -186,10 +195,10 @@ const Navbar = () => {
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
-            <p className='text-gray-400'>{`@${userData.email.substring(0,20)}${userData.email.length >= 20 ? '...' : ''}`}</p>
+            </div>           
           </div>
         )}
+        
       </div>
     </div>
   );

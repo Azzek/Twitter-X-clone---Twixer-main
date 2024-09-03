@@ -36,7 +36,7 @@ const BookmarksPage = () => {
   
   return (
     <PagesLayout>
-        <div>
+        <div className='pl-4 thin-border border-y-0 border-l-0 h-full'>
             <div> 
                 <h1 className='text-2xl'>Bookmarks</h1>
                 <span className='text-sm text-gray-500'>{userData?.username}</span>

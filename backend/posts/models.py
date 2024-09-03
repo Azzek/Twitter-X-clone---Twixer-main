@@ -10,6 +10,7 @@ class Post(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=None, related_name='posts')
     author_name = models.CharField(max_length=18, default='Unknown Author')    
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    quote = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='quotes')
     reposted = models.ForeignKey(UserProfile, null=True, on_delete=models.CASCADE, related_name='reposted_posts')
     
     def save(self, *args, **kwargs):

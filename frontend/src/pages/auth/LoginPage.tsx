@@ -21,9 +21,8 @@ import { useAuth } from '@/components/AuthProvider'
 
 const LoginPage = () => {
   
-  const { getUserData } = useAuth()
+  const { getUserData, login } = useAuth()
   const [error, setError] = useState("")
-
   const navigate = useNavigate()
 
   const form = useForm({
@@ -35,18 +34,6 @@ const LoginPage = () => {
       confirmPassword:""
     },
   })
-  const login = async (username:string, password:string) => {
-    try{
-        const res = await api.post('/api/accounts/token/', { username, password })
-        localStorage.setItem(ACCES_TOKEN, res.data.access)
-        localStorage.setItem(REFRESH_TOKEN, res.data.refresh)
-        getUserData()
-        navigate('/')
-      }
-      catch(err) {
-        setError(err.response.data.detail)
-      } 
-}
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     login(values.username, values.password)

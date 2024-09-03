@@ -20,6 +20,7 @@ interface UserDataTypes {
 
 
 const SearchInput = () => {
+
   const [query, setQuery] = useState<string>('');
   const [results, setResults] = useState<UserDataTypes[]>([]);
   const [inputFocus, setInputFocus] = useState<boolean>(false)
@@ -40,8 +41,8 @@ const SearchInput = () => {
   };
 
   return (
-    <div className="W-[50%]">
-      <div className={`${inputFocus ? 'border-2 border-blue-500' : 'border-0'} flex xl:pr-14 md:pr-0 pl-6 bg-gray-900 rounded-2xl py-1 self-center mt-2 w-[70%] mb-4`}>
+    <div className="W-full">
+      <div className={`${inputFocus ? 'border-2 border-blue-500' : 'border-0'} flex xl:pr-14 md:pr-0 pl-6 bg-gray-900 rounded-2xl py-1 self-center mt-2 w-full mb-4`}>
         <CiSearch className={`${inputFocus ? 'text-blue-500' : 'border-0'} h-9 w-9 self-start`} />
         <Input onFocus={() => setInputFocus(true)}  onBlur={() => setInputFocus(false)} onChange={handleChange} className="focus:outline-none border-transparent w-full"/>
       </div>

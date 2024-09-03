@@ -31,7 +31,7 @@ const Trends = () => {
     }
 
     return (
-        <div className='min-h-8 thin-border w-[70%] mt-4'>
+        <div className='min-h-8 thin-border w-full mt-4 items-start'>
             <h1 className='text-2xl font-bold text-gray-200 pt-3 pl-3'>Trends</h1>
             {
                 isLoading?

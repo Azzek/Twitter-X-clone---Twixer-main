@@ -21,49 +21,49 @@ import {
 import { RiQuillPenLine } from "react-icons/ri";
 
   const PostDialogInput = () => {
-    const [inputValue, setInputValue] = useState('')
-    const [file, setFile] = useState<File | null>(null)
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const { userData } = useAuth()
-    const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+  const [inputValue, setInputValue] = useState('')
+  const [file, setFile] = useState<File | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { userData } = useAuth()
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
 
-    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files.length > 0) {
-        const file = e.target.files[0];
-        setFile(file);
-    }
-    }
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setFile(file);
+  }
+  }
       
-    const onSubmit = async (e:FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      try {
-        const formData = new FormData();
+  const onSubmit = async (e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    try {
+      const formData = new FormData();
+    
+      formData.append("body", inputValue);
       
-        formData.append("body", inputValue);
+      if (file) {
+        formData.append("image", file);
+      }
+      
+      const token = localStorage.getItem(ACCES_TOKEN)
+      const res = await api.post('/api/posts/new-post/',formData, { 
         
-        if (file) {
-          formData.append("image", file);
+        headers:{
+          Authorization: `Bearer ${token}`
         }
-        
-        const token = localStorage.getItem(ACCES_TOKEN)
-        const res = await api.post('/api/posts/new-post/',formData, { 
-          
-          headers:{
-            Authorization: `Bearer ${token}`
-          }
-        })
-        const result = res.data
-        setInputValue("")
-        setFile(null)
-      } catch(error) {
-        console.log(error)
-      }
-    };
+      })
+      const result = res.data
+      setInputValue("")
+      setFile(null)
+    } catch(error) {
+      console.log(error)
+    }
+  };
 
-    const handleFileInputChange = () => {
-      if (fileInputRef.current) {
-          fileInputRef.current.click()
-      }
+  const handleFileInputChange = () => {
+    if (fileInputRef.current) {
+        fileInputRef.current.click()
+    }
   };
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {
@@ -71,13 +71,13 @@ import { RiQuillPenLine } from "react-icons/ri";
     setShowEmojiPicker(false);
   };
     
-    return (
+  return (
       <Dialog>
         <DialogTrigger>
           <span className='bg-blue-400 px-12 py-3 rounded-3xl w-[50%] hidden lg:flex justify-center'>
             Post
           </span>
-          <RiQuillPenLine className='bg-blue-400 h-11  rounded-full p-3 ml-2 lg:hidden w-11 h-11'/>
+          <RiQuillPenLine className='bg-blue-400 h-11  rounded-full p-3 ml-2 lg:hidden w-11'/>
         </DialogTrigger>
         <DialogContent>
           <div className='pt-4 px-4 flex  w-full h-full'>

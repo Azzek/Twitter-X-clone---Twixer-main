@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PagesLayout from './PagesLayout';
-import api, {setAuthToken} from '@/api';
+import api from '@/api';
 import { Link, useParams } from 'react-router-dom';
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Button } from '@/components/ui/button';
@@ -8,23 +8,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RxAvatar } from "react-icons/rx";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { format } from 'date-fns';
-import { da, enUS } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 import IdPost from '@/components/IdPost';
 import { useAuth } from '@/components/AuthProvider';
 import SetupProfileElement from '@/components/SetupProfileElement';
-import { HiOutlineUserAdd } from "react-icons/hi";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { BsThreeDots } from "react-icons/bs";
@@ -125,14 +117,14 @@ const getLikedPosts = async () => {
 
   return (
     <PagesLayout>
-      <div className='h-screen w-100 flex-shrink-0 w-full'>
+      <div className='h-screen w-100 flex-shrink-0 w-full thin-border rounded-none border-t-0'>
         <div className='w-full h-8 flex justify-start items-center pt-4 mb-5 '>
           <Link to='/'>
             <IoMdArrowRoundBack className='h-12 w-12 opacity-85 mr-10'/>
           </Link>
           <h1 className='text-xl font-bold'>{UsernameUserData?.username}</h1>
         </div>
-        <div className='w-full relative thin-border border-b-0'>
+        <div className='w-full relative border-b-0'>
           {UsernameUserData?.banner ? (
             <img src={UsernameUserData?.banner} alt="Profile baner" className='w-full bg-gray-500 min-h-56 max-h-10 rounded-xl'/>
           ) 
@@ -226,7 +218,7 @@ const getLikedPosts = async () => {
             <h1>{profUsername}</h1>
           )}
         </div>
-        <div>
+        <div className='thin-border'>
         <div className='flex  pt-2 w-full'>
                 <div className={`w-full hover:bg-slate-900 text-center h-16 flex rounded-lg ${postsDisplay == 'posts'? 'bg-slate-800' : ''}`}
                  onClick={() => setPostsDisplay('posts')}

@@ -5,21 +5,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,         
+  DropdownMenuItem,         
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
   Card,
   CardDescription,
-  CardFooter,
-  CardHeader,
 } from "@/components/ui/card";
 import { Link } from 'react-router-dom';
 import CommentDialog from './ReplyDialog';
@@ -68,127 +59,120 @@ interface PostTypes {
 }
 
 const ParentPostComponent = ({removeBookmarkOnPage,  id, remove, reposted}:IdPostPropsTypes) => {
-    const { userData, deletePost, addFollow, removeFollow, blockUser } = useAuth()
-    const [ postData, setPostData ] = useState<PostTypes | null>(null)
-    const [ authorData, setAuthorData ] = useState<UserDataTypes | null>(null)
-    const [ repostedBy, setRepostedBy ] = useState()
-    useEffect(() => {
-      const fetchData = async () => {
-          try {
-              await getPostData();
-              await isReposted()
-          } catch (error) {
-              console.error('Error fetching data:', error);
-          }
-      };
 
-      fetchData();
+  const { userData, deletePost, addFollow, removeFollow, blockUser } = useAuth()
+  const [ postData, setPostData ] = useState<PostTypes | null>(null)
+  const [ authorData, setAuthorData ] = useState<UserDataTypes | null>(null)
+  const [ repostedBy, setRepostedBy ] = useState()
+
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            await getPostData();
+            await isReposted()
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+  fetchData();
   }, []);
 
-    const getAuthorData = async (id:number) => {
-          try {
-              const res = await api.get(`/api/accounts/id/${id}`)
-              setAuthorData(res.data)
-
-          } catch(err) {
-              console.log(err)
-          }
-      }
-    const getPostData = async () => {
+  const getAuthorData = async (id:number) => {
         try {
-         const res = await api.get(`/api/posts/post/${id}`)   
-         setPostData(res.data)              
-         if (res.data?.author) {
-          await getAuthorData(res.data.author);
-        }
-        console.log(res.data)
+            const res = await api.get(`/api/accounts/id/${id}`)
+            setAuthorData(res.data)
+
         } catch(err) {
-          console.log(err)      
+            console.log(err)
         }
-    }
+  }
+
+  const getPostData = async () => {
+      try {
+        const res = await api.get(`/api/posts/post/${id}`)   
+        setPostData(res.data)              
+        if (res.data?.author) {
+        await getAuthorData(res.data.author);
+      }
+      console.log(res.data)
+      } catch(err) {
+        console.log(err)      
+      }
+  }
     
-    const like = async () => {
-      
-      try {
-        api.post('/api/posts/like/', { post:postData?.id }).then(getPostData)
-      //   if (postData && userData) {
-      //   const updatedPostData = { ...postData }; 
-      //   updatedPostData.likes = [...updatedPostData.likes, userData.user];
-      //   setPostData(updatedPostData);
-      // }
-      console.log('like')
-      } catch(err) {
-        console.log(err)
-      }
+  const like = async () => {
+    try {
+      api.post('/api/posts/like/', { post:postData?.id }).then(getPostData)
+    console.log('like')
+    } catch(err) {
+      console.log(err)
     }
-    const unLike = async () => {
-      try {
-        api.delete(`/api/posts/unlike/${postData?.id}/`).then(getPostData)
-      //   if (postData) {
-      //   let pc = {...postData}
-      //   pc.likes = pc.likes.filter((l)=> l!=userData?.user)
-      //   setPostData(pc)
-      //   await getPostData()
-      // }
-      console.log('unlike')
-      } catch(err) {
-        console.log(err)
-      }
-    }
+  }
 
-    const addBookmark = async () => {
-      try {
-        const response = await api.post('/api/posts/bookmarks/', {post:id, user:userData?.user})
-        getPostData()
-        console.log(response.data)
-      } catch(err) {
-        console.log(err)
-      }
+  const unLike = async () => {
+    try {
+      api.delete(`/api/posts/unlike/${postData?.id}/`).then(getPostData)
+    console.log('unlike')
+    } catch(err) {
+      console.log(err)
     }
+  }
 
-    const removeBookMark = () => {
-      try {
-        const response = api.delete(`/api/posts/bookmarks/${id}`)
-        console.log(response)
-        getPostData()
-        removeBookmarkOnPage?.(id)
-      } catch (err) {
-        console.log(err)
-      }
+  const addBookmark = async () => {
+    try {
+      const response = await api.post('/api/posts/bookmarks/', {post:id, user:userData?.user})
+      getPostData()
+      console.log(response.data)
+    } catch(err) {
+      console.log(err)
     }
+  }
 
-    const handleBookmarkClick = () => {
-      if (userData?.bookmarks.includes(id) && id) {
-         removeBookMark() 
-        } else {
-         addBookmark()
-          }
-    }    
-    const repost = () => {
-      try {
-        if (postData && userData){         
-          api.post('/api/posts/repost/', {
-            "reposted":userData?.user.toString(),
-            "post_id": postData.id,
-            "body": postData.body,
-            "author_name": postData.author_name
-          })
-       }
+  const removeBookMark = () => {
+    try {
+      const response = api.delete(`/api/posts/bookmarks/${id}`)
+      console.log(response)
+      getPostData()
+      removeBookmarkOnPage?.(id)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const handleBookmarkClick = () => {
+    if (userData?.bookmarks.includes(id) && id) {
+        removeBookMark() 
+      } else {
+        addBookmark()
+        }
+  }    
+
+  const repost = () => {
+    try {
+      if (postData && userData){         
+        api.post('/api/posts/repost/', {
+          "reposted":userData?.user.toString(),
+          "post_id": postData.id,
+          "body": postData.body,
+          "author_name": postData.author_name
+        })
+      }
       } catch(error) {
         console.log(error)
       }
     };
     
-    const isReposted = async () => { 
-      if (reposted) {
-        try {
-          const response = await api.get(`/api/accounts/id/${reposted}`)
-          setRepostedBy(response.data.username)
-        } catch (err) {
-          console.log(err)
-        }
+  const isReposted = async () => { 
+    if (reposted) {
+      try {
+        const response = await api.get(`/api/accounts/id/${reposted}`)
+        setRepostedBy(response.data.username)
+      } catch (err) {
+        console.log(err)
       }
     }
+  }
     
   return (
     <Card className='rounded-xl w-full m-0 bg-black pb-2 hover:bg-gray-950 border-0'>

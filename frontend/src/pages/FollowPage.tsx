@@ -18,6 +18,7 @@ interface UsernameUserDataTypes {
   }
   
 const FollowPage = () => {
+
     const { ProfUsername } = useParams();
     const [UsernameUserData, setUsernameUserData] = useState<UsernameUserDataTypes>();
     const [flDisplay, setFlDisplay] = useState<'followers' | 'followed'>('followers')
@@ -77,7 +78,6 @@ const FollowPage = () => {
             </div>
         </div>
     </PagesLayout>
-      
   )
 }
 

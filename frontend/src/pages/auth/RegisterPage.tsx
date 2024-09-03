@@ -18,10 +18,10 @@ import { useNavigate } from 'react-router-dom'
 import api from '@/api'
 
 type ErrorResponse = {
-  username?: string[]; // Pola mogą być opcjonalne
+  username?: string[]; 
   password?: string[];
   email?: string[];
-  [key: string]: string[] | undefined; // Dla dodatkowych dynamicznych pól
+  [key: string]: string[] | undefined; 
 };
 
 const RegisterPage = () => {

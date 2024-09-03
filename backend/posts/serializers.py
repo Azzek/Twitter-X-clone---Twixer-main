@@ -6,7 +6,7 @@ class PostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['id', 'body', 'date', 'image', 'author', 'author_name', 'likes', 'parent', 'replies', 'reposted']
+        fields = ['id', 'body', 'date', 'image', 'author', 'author_name', 'likes', 'parent', 'replies', 'reposted', 'quote']
         extra_kwargs = {
             'replies':{'read_only': True}
         }

@@ -16,6 +16,7 @@ interface ReplyPostComponentProps {
 }
 
 const ReplyPostComponent: React.FC<ReplyPostComponentProps> = ({ postId }) => {
+
   const [inputValue, setInputValue] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
@@ -39,7 +40,6 @@ const ReplyPostComponent: React.FC<ReplyPostComponentProps> = ({ postId }) => {
         formData.append("image", file);
       }
       const res = await api.post('/api/posts/new-post/', formData);
-      const result = res.data;
       if (res.status >= 200 && res.status < 300) {
         setInputValue('');
         setFile(null);

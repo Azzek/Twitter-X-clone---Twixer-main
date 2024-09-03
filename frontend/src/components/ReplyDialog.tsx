@@ -16,48 +16,48 @@ interface CommentDialogProps {
 }
 
 const CommentDialog: React.FC<CommentDialogProps> = ({ children, postId }) => {
-    const [inputValue, setInputValue] = useState('')
-    const [file, setFile] = useState<File | null>(null)
-    const fileInputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState('')
+  const [file, setFile] = useState<File | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files.length > 0) {
-        const file = e.target.files[0];
-        setFile(file);
-    }
-    }
-      
-    const onSubmit = async (e:FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      try {
-        const formData = new FormData();
-      
-        formData.append("body", inputValue);
-
-        formData.append("parent", `${postId}`);
-        
-        if (file) {
-          formData.append("image", file);
-        }
-        
-        const res = await api.post('/api/posts/new-post/', formData)
-        const result = res.data
-        console.log(result)
-        if (res.status < 200 || res.status > 299) {
-        } else {
-          setInputValue("")
-        }
-      } catch(error) {
-        console.log(error)
-      }
-    };
-
-    const handleFileInputChange = () => {
-      if (fileInputRef.current) {
-          fileInputRef.current.click()
-      }
-  };
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setFile(file);
+  }
+  }
     
+  const onSubmit = async (e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    try {
+      const formData = new FormData();
+    
+      formData.append("body", inputValue);
+
+      formData.append("parent", `${postId}`);
+      
+      if (file) {
+        formData.append("image", file);
+      }
+      
+      const res = await api.post('/api/posts/new-post/', formData)
+      const result = res.data
+      console.log(result)
+      if (res.status < 200 || res.status > 299) {
+      } else {
+        setInputValue("")
+      }
+    } catch(error) {
+      console.log(error)
+    }
+  };
+
+  const handleFileInputChange = () => {
+    if (fileInputRef.current) {
+        fileInputRef.current.click()
+    }
+  };
+  
   return (
      <Dialog>
         <DialogTitle className='hidden'>

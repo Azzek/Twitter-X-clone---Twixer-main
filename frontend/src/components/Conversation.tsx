@@ -32,29 +32,29 @@ const Conversation = ({id, user1, user2, setConversationId, setChatmate}:Convers
     const { userData } = useAuth()
     const [ chatMateData, setChatMateData] = useState<UserDataTypes>()
 
-    useEffect(() => {
-        getChatmate()
-    }, [userData])
-    
-    const getChatmate = async () => {
-        try {
-          if (userData) {
-            const response = await api.get(`/api/accounts/id/${user1 == userData?.user? user2 : user1}`)
-            console.log(user1 == userData?.user? user2 : user1)
-            setChatMateData(response.data)
-            setChatmate(response.data)
-          }
-            
-        } catch (err) {
-            console.log(err)
+  useEffect(() => {
+      getChatmate()
+  }, [userData])
+  
+  const getChatmate = async () => {
+      try {
+        if (userData) {
+          const response = await api.get(`/api/accounts/id/${user1 == userData?.user? user2 : user1}`)
+          console.log(user1 == userData?.user? user2 : user1)
+          setChatMateData(response.data)
+          setChatmate(response.data)
         }
-    }
+          
+      } catch (err) {
+          console.log(err)
+      }
+  }
 
-    const handleConversationOnClick = () => {
-        navigate('/messages/'+id)
-        setConversationId()
-        getChatmate()
-    }
+  const handleConversationOnClick = () => {
+      navigate('/messages/'+id)
+      setConversationId()
+      getChatmate()
+  }
     
 
   return (

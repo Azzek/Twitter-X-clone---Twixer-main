@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import api from "@/api";
 import Logo from "./Logo";
+import LoginPage from "@/pages/auth/LoginPage";
 
 interface AuthProviderProps {
   children: ReactNode; 
@@ -33,6 +34,7 @@ interface ContextTypes {
     userData:UserDataTypes | null,
     logout:() =>void,
     getUserData:() =>void,
+    login:(username:string, password:string)=>void
     // login:(username:string, password:string) =>any
   }
   
@@ -129,81 +131,95 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-    const logout = () => {
-        localStorage.clear();
-        navigate('/login');
-      };
-    
-    const deletePost = async (postId:number) => {
-        try {
-          api.delete(`/api/posts/delete/${postId}/`)
-        } 
-        catch(err) {
-          console.log(err)
-        }
+  const logout = () => {
+      localStorage.clear();
+      navigate('/login');
+    };
+
+  const login = async (username:string, password:string) => {
+    try{
+        const res = await api.post('/api/accounts/token/', { username, password })
+        localStorage.setItem(ACCES_TOKEN, res.data.access)
+        localStorage.setItem(REFRESH_TOKEN, res.data.refresh)
+        getUserData()
+        setIsAuthenticated(true)
+        navigate('/')
       }
-
-      const getUserData = async () => {
-        const token = getToken()
-        try {
-            const res = await api.get(`/api/accounts/id/${token?.user_id}`);
-            setUserData(res.data);
-            console.log(res.data)
-        } catch (err) {
-            console.error(err);
-        }
-      };
-
-    const removeFollow = (whoToUnfollow:number) => {
+      catch(err) {
+        console.log(err)
+      } 
+  }
+    
+  const deletePost = async (postId:number) => {
       try {
-        api.delete(`/api/accounts/unfollow/`, { data: {user_id:whoToUnfollow}  })
-        if (whoToUnfollow && userData) {
-          let uc = userData;
-          uc.followership = userData.followership.filter((f)=> f!==userData?.user);
-          setUserData(uc)
-        }
-       } catch(err) {
-          console.log(err)
-        }
-        getUserData()
-        
-    } 
-  
-    const addFollow = (whoToFollow:number) => {
-      try {
-        api.post('/api/accounts/follow/', { follows:whoToFollow, follower:userData?.user})
-        
-        if (whoToFollow && userData) {
-          let uc = userData;
-          uc.followership.push(whoToFollow);
-          setUserData(uc)
-        } 
-        getUserData()
-        } 
-        catch(err) {
-            console.log(err)
-        }
+        api.delete(`/api/posts/delete/${postId}/`)
+      } 
+      catch(err) {
+        console.log(err)
+      }
     }
+
+  const getUserData = async () => {
+    const token = getToken()
+    try {
+        const res = await api.get(`/api/accounts/id/${token?.user_id}`);
+        setUserData(res.data);
+        console.log(res.data)
+    } catch (err) {
+        console.error(err);
+    }
+  };
+
+  const removeFollow = (whoToUnfollow:number) => {
+    try {
+      api.delete(`/api/accounts/unfollow/`, { data: {user_id:whoToUnfollow}  })
+      if (whoToUnfollow && userData) {
+        let uc = userData;
+        uc.followers = userData.followers.filter((f)=> f!==userData?.user);
+        setUserData(uc)
+      }
+      } catch(err) {
+        console.log(err)
+      }
+      getUserData()
+      
+  } 
+  
+  const addFollow = (whoToFollow:number) => {
+    try {
+      api.post('/api/accounts/follow/', { follows:whoToFollow, follower:userData?.user})
+      
+      if (whoToFollow && userData) {
+        let uc = userData;
+        uc.follows.push(whoToFollow);
+        setUserData(uc)
+      } 
+      getUserData()
+      } 
+      catch(err) {
+          console.log(err)
+      }
+  }
     
-    const blockUser = async (whoToBlock:number) => {
-      try {
-        await api.post(`/api/accounts/block/${whoToBlock}/`)
-        let cu = userData
-        cu?.blocked_users.push(whoToBlock)
-        setUserData(cu)
-      } catch(err) {
-        console.log(err)
-      }
+  const blockUser = async (whoToBlock:number) => {
+    try {
+      await api.post(`/api/accounts/block/${whoToBlock}/`)
+      let cu = userData
+      cu?.blocked_users.push(whoToBlock)
+      setUserData(cu)
+    } catch(err) {
+      console.log(err)
+    }
   }  
-    const unBlockUser = async (whoToUnBlock:number) => {
-      try {
-        await api.delete(`/api/accounts/block/${whoToUnBlock}/`)
-        let cu = userData
-        cu?.blocked_users.filter((f)=>f!=whoToUnBlock)
-        setUserData(cu)
-      } catch(err) {
-        console.log(err)
-      }
+  const unBlockUser = async (whoToUnBlock:number) => {
+    try {
+      await api.delete(`/api/accounts/block/${whoToUnBlock}/`)
+      let cu = userData
+      cu?.blocked_users.filter((f)=>f!=whoToUnBlock)
+      setUserData(cu)
+    } catch(err) {
+      console.log(err)
+    }
   }  
   
   const values: ContextTypes = {
@@ -215,8 +231,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     deletePost,
     userData,
     logout,
+    login,
     getUserData
-    // login
   };
 
   return (
@@ -225,7 +241,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       !isLoading?
       (
         <AuthContext.Provider value={values}>
-          {children}
+          { isAuthenticated? children : <LoginPage/> }
         </AuthContext.Provider>
       )
       :

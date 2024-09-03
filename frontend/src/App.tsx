@@ -6,7 +6,6 @@ import AuthProvider from "./components/AuthProvider"
 import ProfilePage from "./pages/ProfilePage"
 import PostPage from "./pages/PostPage"
 import FollowPage from "./pages/FollowPage"
-import ChatsPage from "./pages/ChatsPage"
 import MessagesPage from "./pages/MessagesPage"
 import BookmarksPage from "./pages/BookmarksPage"
 

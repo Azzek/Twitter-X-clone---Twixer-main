@@ -1,25 +1,16 @@
 import api from '@/api'
 import { BiRepost } from "react-icons/bi";
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,         
+  DropdownMenuItem,       
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
   Card,
   CardDescription,
-  CardFooter,
-  CardHeader,
 } from "@/components/ui/card";
 import { Link } from 'react-router-dom';
 import CommentDialog from './ReplyDialog';
@@ -69,10 +60,12 @@ interface PostTypes {
 }
 
 const IdPost = ({removeBookmarkOnPage,  id, remove, reposted}:IdPostPropsTypes) => {
+
     const { userData, deletePost, addFollow, removeFollow, blockUser, getUserData } = useAuth()
     const [ postData, setPostData ] = useState<PostTypes | null>(null)
     const [ authorData, setAuthorData ] = useState<UserDataTypes | null>(null)
     const [ repostedBy, setRepostedBy ] = useState()
+
     useEffect(() => {
       const fetchData = async () => {
           try {
@@ -86,111 +79,102 @@ const IdPost = ({removeBookmarkOnPage,  id, remove, reposted}:IdPostPropsTypes) 
       fetchData();
   }, []);
 
-    const getAuthorData = async (id:number) => {
-          try {
-              const res = await api.get(`/api/accounts/id/${id}`)
-              setAuthorData(res.data)
-
-          } catch(err) {
-              console.log(err)
-          }
-      }
-    const getPostData = async () => {
+  const getAuthorData = async (id:number) => {
         try {
-         const res = await api.get(`/api/posts/post/${id}`)   
-         setPostData(res.data)              
-         if (res.data?.author) {
-          await getAuthorData(res.data.author);
-        }
-        console.log(res.data)
+            const res = await api.get(`/api/accounts/id/${id}`)
+            setAuthorData(res.data)
+
         } catch(err) {
-          console.log(err)      
+            console.log(err)
         }
     }
+
+  const getPostData = async () => {
+      try {
+        const res = await api.get(`/api/posts/post/${id}`)   
+        setPostData(res.data)              
+        if (res.data?.author) {
+        await getAuthorData(res.data.author);
+      }
+      console.log(res.data)
+      } catch(err) {
+        console.log(err)      
+      }
+  }
     
-    const like = async () => {
-      
-      try {
-        api.post('/api/posts/like/', { post:postData?.id }).then(getPostData)
-      //   if (postData && userData) {
-      //   const updatedPostData = { ...postData }; 
-      //   updatedPostData.likes = [...updatedPostData.likes, userData.user];
-      //   setPostData(updatedPostData);
-      // }
-      console.log('like')
-      } catch(err) {
-        console.log(err)
-      }
+  const like = async () => {
+    try {
+      api.post('/api/posts/like/', { post:postData?.id }).then(getPostData)
+    console.log('like')
+    } catch(err) {
+      console.log(err)
     }
-    const unLike = async () => {
-      try {
-        api.delete(`/api/posts/unlike/${postData?.id}/`).then(getPostData)
-      //   if (postData) {
-      //   let pc = {...postData}
-      //   pc.likes = pc.likes.filter((l)=> l!=userData?.user)
-      //   setPostData(pc)
-      //   await getPostData()
-      // }
+  }
+
+  const unLike = async () => {
+    try {
+      api.delete(`/api/posts/unlike/${postData?.id}/`).then(getPostData)
       console.log('unlike')
-      } catch(err) {
-        console.log(err)
-      }
+    } catch(err) {
+      console.log(err)
     }
+  }
 
-    const addBookmark = async () => {
-      try {
-        const response = await api.post('/api/posts/bookmarks/', {post:id, user:userData?.user})
-        getPostData()
-        getUserData()
-        console.log(response.data)
-      } catch(err) {
-        console.log(err)
-      }
+  const addBookmark = async () => {
+    try {
+      const response = await api.post('/api/posts/bookmarks/', {post:id, user:userData?.user})
+      getPostData()
+      getUserData()
+      console.log(response.data)
+    } catch(err) {
+      console.log(err)
     }
+  }
 
-    const removeBookMark = () => {
+  const removeBookMark = () => {
+    try {
+      const response = api.delete(`/api/posts/bookmarks/${id}`)
+      console.log(response)
+      getPostData()
+      removeBookmarkOnPage?.(id)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const handleBookmarkClick = () => {
+    if (userData?.bookmarks.includes(id) && id) {
+        removeBookMark() 
+      } else {
+        addBookmark()
+        }
+  }   
+
+  const repost = () => {
+    try {
+      if (postData && userData){         
+        api.post('/api/posts/repost/', {
+          "reposted":userData?.user.toString(),
+          "post_id": postData.id,
+          "body": postData.body,
+          "author_name": postData.author_name
+        })
+      }
+    } catch(error) {
+      console.log(error)
+    }
+  };
+    
+  const isReposted = async () => { 
+    if (reposted) {
       try {
-        const response = api.delete(`/api/posts/bookmarks/${id}`)
-        console.log(response)
-        getPostData()
-        removeBookmarkOnPage?.(id)
+        const response = await api.get(`/api/accounts/id/${reposted}`)
+        setRepostedBy(response.data.username)
       } catch (err) {
         console.log(err)
       }
     }
-
-    const handleBookmarkClick = () => {
-      if (userData?.bookmarks.includes(id) && id) {
-         removeBookMark() 
-        } else {
-         addBookmark()
-          }
-    }    
-    const repost = () => {
-      try {
-        if (postData && userData){         
-          api.post('/api/posts/repost/', {
-            "reposted":userData?.user.toString(),
-            "post_id": postData.id,
-            "body": postData.body,
-            "author_name": postData.author_name
-          })
-       }
-      } catch(error) {
-        console.log(error)
-      }
-    };
-    
-    const isReposted = async () => { 
-      if (reposted) {
-        try {
-          const response = await api.get(`/api/accounts/id/${reposted}`)
-          setRepostedBy(response.data.username)
-        } catch (err) {
-          console.log(err)
-        }
-      }
-    }
+  }
     
     
   return (
@@ -202,12 +186,10 @@ const IdPost = ({removeBookmarkOnPage,  id, remove, reposted}:IdPostPropsTypes) 
                     remove={remove}
                   />}
               </div>
-              
                {repostedBy && <span className='text-gray-600 flex ml-3'><BiRepost className='w-6 h-6'/>{repostedBy} reposted</span>}
                <div className="w-full flex">
                   <div className="h-full mr-2">
                     <Link className="h-full" to={`/${authorData?.username}/`}>
-                    
                         <Avatar className="w-12 h-12 ml-2 mt-2 flex justify-start z-20">
                             <AvatarImage className="w-12 h-12 rounded-full" src={authorData?.avatar || ''} />
                             <AvatarFallback>
@@ -215,13 +197,11 @@ const IdPost = ({removeBookmarkOnPage,  id, remove, reposted}:IdPostPropsTypes) 
                             </AvatarFallback>
                         </Avatar>
                     </Link>
-                    
                   </div>
-                  
                   <div className="w-full mt-1 relative">
                     <Link to={`/${authorData?.username}/tw/${id}`}>
-                    <span className="text-white ml-2 font-semibold text-lg self-start m-0">{postData?.author_name}</span>
-                    <span className="text-gray-100 opacity-70 pl-3 font-semibold text-sm m-0">{postData && formatDistanceToNow (new Date(postData?.date), { addSuffix: true })}</span>
+                      <span className="text-white ml-2 font-semibold text-lg self-start m-0">{postData?.author_name}</span>
+                      <span className="text-gray-100 opacity-70 pl-3 font-semibold text-sm m-0">{postData && formatDistanceToNow (new Date(postData?.date), { addSuffix: true })}</span>
                     </Link>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild className="border-0">

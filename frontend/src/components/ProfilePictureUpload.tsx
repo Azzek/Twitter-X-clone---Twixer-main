@@ -3,9 +3,6 @@ import { Label } from "@/components/ui/label"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaUserCircle } from "react-icons/fa";
 import { Input } from './ui/input';
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { MdOutlineAddAPhoto } from "react-icons/md";
-import { useAuth } from './AuthProvider';
 
 interface ProfilePictureUploadProps {
     avatar: string | undefined;
